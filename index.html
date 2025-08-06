@@ -352,6 +352,8 @@ button:hover {
                 <img src="BACKGROUNDS/92.PNG" alt="Grey" onclick="selectTrait('background', 'BACKGROUNDS/92.PNG')">
                 <img src="BACKGROUNDS/93.PNG" alt="Grey" onclick="selectTrait('background', 'BACKGROUNDS/93.PNG')">
                 <img src="BACKGROUNDS/94.PNG" alt="Grey" onclick="selectTrait('background', 'BACKGROUNDS/94.PNG')">
+                <img src="BACKGROUNDS/95.PNG" alt="Grey" onclick="selectTrait('background', 'BACKGROUNDS/95.PNG')">
+
 
         </div>
         </div>
@@ -704,6 +706,9 @@ button:hover {
 <img src="CLOTHING/107.PNG" alt="CLOTHING" onclick="selectTrait('clothing', 'CLOTHING/107.PNG')">
 <img src="CLOTHING/108.PNG" alt="CLOTHING" onclick="selectTrait('clothing', 'CLOTHING/108.PNG')">
 <img src="CLOTHING/109.PNG" alt="CLOTHING" onclick="selectTrait('clothing', 'CLOTHING/109.PNG')">
+<img src="CLOTHING/110.PNG" alt="CLOTHING" onclick="selectTrait('clothing', 'CLOTHING/110.PNG')">
+<img src="CLOTHING/111.PNG" alt="CLOTHING" onclick="selectTrait('clothing', 'CLOTHING/111.PNG')">
+
             </div>
         </div>
 
@@ -844,6 +849,9 @@ button:hover {
 <img src="HATS/96.PNG" alt="HATS" onclick="selectTrait('hat', 'HATS/96.PNG')">
 <img src="HATS/97.PNG" alt="HATS" onclick="selectTrait('hat', 'HATS/97.PNG')">
 <img src="HATS/98.PNG" alt="HATS" onclick="selectTrait('hat', 'HATS/98.PNG')">
+<img src="HATS/99.PNG" alt="HATS" onclick="selectTrait('hat', 'HATS/99.PNG')">
+<img src="HATS/100.PNG" alt="HATS" onclick="selectTrait('hat', 'HATS/100.PNG')">
+
 
             </div>
         </div>
@@ -991,13 +999,13 @@ function getRandomIndex(max) {
     return Math.floor(Math.random() * max) + 1;
 }
 
-function getImagePath(folder, index) {
+function getImagePath(folder, index) {s
     return `${folder}/${index}.PNG`;
 }
 
 function randomizeCharacter() {
     // ---- BASE TRAITS ---- //
-    const backgroundIndex = getRandomIndex(94);
+    const backgroundIndex = getRandomIndex(95);
     selectTrait('background', getImagePath('BACKGROUNDS', backgroundIndex));
 
     const skinIndex = getRandomIndex(36);
@@ -1009,7 +1017,7 @@ function randomizeCharacter() {
     const mouthIndex = getRandomIndex(86);
     selectTrait('mouth', getImagePath('MOUTH', mouthIndex));
 
-    const clothingIndex = getRandomIndex(109);
+    const clothingIndex = getRandomIndex(111);
     selectTrait('clothing', getImagePath('CLOTHING', clothingIndex));
 
     // ---- HAIR / HAT ---- //
@@ -1017,7 +1025,7 @@ function randomizeCharacter() {
         selectTrait('hair', getImagePath('HAIR', getRandomIndex(56)));
         selectTrait('hat', '');
     } else {
-        selectTrait('hat', getImagePath('HATS', getRandomIndex(98)));
+        selectTrait('hat', getImagePath('HATS', getRandomIndex(100)));
         selectTrait('hair', '');
     }
 
