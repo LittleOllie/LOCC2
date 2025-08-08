@@ -228,7 +228,7 @@ button:hover {
         <button class="category-button hair-button" onclick="showCategory('hairCategory')">HAIRSTYLES</button>
         <button class="category-button hat-button" onclick="showCategory('hatCategory')">HEADWEAR</button>
         <button class="category-button behindback-button" onclick="showCategory('behindbackCategory')">BEHIND BACK</button>
-        <button class="category-button goo" onclick="showCategory('gooCategory')">GOO</button>
+        <button class="category-button goo" onclick="showCategory('gooCategory')">ABOVE HEAD</button>
 
 
 
@@ -353,6 +353,8 @@ button:hover {
                 <img src="BACKGROUNDS/93.PNG" alt="Grey" onclick="selectTrait('background', 'BACKGROUNDS/93.PNG')">
                 <img src="BACKGROUNDS/94.PNG" alt="Grey" onclick="selectTrait('background', 'BACKGROUNDS/94.PNG')">
                 <img src="BACKGROUNDS/95.PNG" alt="Grey" onclick="selectTrait('background', 'BACKGROUNDS/95.PNG')">
+                <img src="BACKGROUNDS/96.PNG" alt="Grey" onclick="selectTrait('background', 'BACKGROUNDS/96.PNG')">
+
 
 
         </div>
@@ -523,6 +525,8 @@ button:hover {
                 <img src="MOUTH/84.PNG" alt="Happy 1" onclick="selectTrait('mouth', 'MOUTH/84.PNG')">
                 <img src="MOUTH/85.PNG" alt="Happy 1" onclick="selectTrait('mouth', 'MOUTH/85.PNG')">
                 <img src="MOUTH/86.PNG" alt="Happy 1" onclick="selectTrait('mouth', 'MOUTH/86.PNG')">
+                <img src="MOUTH/87.PNG" alt="Happy 1" onclick="selectTrait('mouth', 'MOUTH/87.PNG')">
+
 
             </div>
         </div>
@@ -708,6 +712,8 @@ button:hover {
 <img src="CLOTHING/109.PNG" alt="CLOTHING" onclick="selectTrait('clothing', 'CLOTHING/109.PNG')">
 <img src="CLOTHING/110.PNG" alt="CLOTHING" onclick="selectTrait('clothing', 'CLOTHING/110.PNG')">
 <img src="CLOTHING/111.PNG" alt="CLOTHING" onclick="selectTrait('clothing', 'CLOTHING/111.PNG')">
+<img src="CLOTHING/112.PNG" alt="CLOTHING" onclick="selectTrait('clothing', 'CLOTHING/112.PNG')">
+
 
             </div>
         </div>
@@ -734,6 +740,7 @@ button:hover {
 <img src="GLASSES/17.PNG" alt="GLASSES" onclick="selectTrait('accessories', 'GLASSES/17.PNG')">
 <img src="GLASSES/18.PNG" alt="GLASSES" onclick="selectTrait('accessories', 'GLASSES/18.PNG')">
 <img src="GLASSES/19.PNG" alt="GLASSES" onclick="selectTrait('accessories', 'GLASSES/19.PNG')">
+<img src="GLASSES/20.PNG" alt="GLASSES" onclick="selectTrait('accessories', 'GLASSES/20.PNG')">
 
             </div>
         </div>
@@ -851,6 +858,8 @@ button:hover {
 <img src="HATS/98.PNG" alt="HATS" onclick="selectTrait('hat', 'HATS/98.PNG')">
 <img src="HATS/99.PNG" alt="HATS" onclick="selectTrait('hat', 'HATS/99.PNG')">
 <img src="HATS/100.PNG" alt="HATS" onclick="selectTrait('hat', 'HATS/100.PNG')">
+<img src="HATS/101.PNG" alt="HATS" onclick="selectTrait('hat', 'HATS/101.PNG')">
+
 
 
             </div>
@@ -860,6 +869,10 @@ button:hover {
 <img src="GOO/AAA.PNG" alt="GOO" onclick="selectTrait('goo', 'GOO/AA.PNG')">
 <img src="GOO/1.PNG" alt="GOO" onclick="selectTrait('goo', 'GOO/1.PNG')">
 <img src="GOO/2.PNG" alt="GOO" onclick="selectTrait('goo', 'GOO/2.PNG')">
+<img src="GOO/3.PNG" alt="GOO" onclick="selectTrait('goo', 'GOO/3.PNG')">
+<img src="GOO/4.PNG" alt="GOO" onclick="selectTrait('goo', 'GOO/4.PNG')">
+
+
  </div>
         </div>
 
@@ -999,13 +1012,13 @@ function getRandomIndex(max) {
     return Math.floor(Math.random() * max) + 1;
 }
 
-function getImagePath(folder, index) {s
+function getImagePath(folder, index) {
     return `${folder}/${index}.PNG`;
 }
 
 function randomizeCharacter() {
     // ---- BASE TRAITS ---- //
-    const backgroundIndex = getRandomIndex(95);
+    const backgroundIndex = getRandomIndex(96);
     selectTrait('background', getImagePath('BACKGROUNDS', backgroundIndex));
 
     const skinIndex = getRandomIndex(36);
@@ -1014,10 +1027,10 @@ function randomizeCharacter() {
     const eyesIndex = getRandomIndex(32);
     selectTrait('eyes', getImagePath('EYES', eyesIndex));
 
-    const mouthIndex = getRandomIndex(86);
+    const mouthIndex = getRandomIndex(87);
     selectTrait('mouth', getImagePath('MOUTH', mouthIndex));
 
-    const clothingIndex = getRandomIndex(111);
+    const clothingIndex = getRandomIndex(112);
     selectTrait('clothing', getImagePath('CLOTHING', clothingIndex));
 
     // ---- HAIR / HAT ---- //
@@ -1025,14 +1038,14 @@ function randomizeCharacter() {
         selectTrait('hair', getImagePath('HAIR', getRandomIndex(56)));
         selectTrait('hat', '');
     } else {
-        selectTrait('hat', getImagePath('HATS', getRandomIndex(100)));
+        selectTrait('hat', getImagePath('HATS', getRandomIndex(101)));
         selectTrait('hair', '');
     }
 
     // ---- OPTIONAL TRAITS ---- //
-    selectTrait('accessories', Math.random() < 0.5 ? getImagePath('GLASSES', getRandomIndex(19)) : '');
+    selectTrait('accessories', Math.random() < 0.5 ? getImagePath('GLASSES', getRandomIndex(20)) : '');
     selectTrait('behindback', Math.random() < 0.5 ? getImagePath('BEHINDBACK', getRandomIndex(4)) : '');
-    selectTrait('goo', Math.random() < 0.5 ? getImagePath('GOO', getRandomIndex(2)) : '');
+    selectTrait('goo', Math.random() < 0.5 ? getImagePath('GOO', getRandomIndex(4)) : '');
 
     // ---- CLEAR HANDS ---- //
     selectTrait('hand', '');
