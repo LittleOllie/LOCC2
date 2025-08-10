@@ -216,6 +216,7 @@ button:hover {
 <div id="mainContent">
     <div id="traitSelection">
         <button class="category-button background-button" onclick="showCategory('backgroundCategory')">BACKGROUNDS</button>
+        <button class="category-button backgroundblur-button" onclick="showCategory('backgroundblurCategory')">BACKGROUND BLUR</button>
         <button class="category-button mouth-button" onclick="showCategory('mouthCategory')">MOUTH</button>
         <button class="category-button hand-button" onclick="showCategory('handCategory')">HAND GESTURES 1</button>
         <button class="category-button hair-button" onclick="showCategory('hand2Category')">HAND GESTURES 2</button>
@@ -237,6 +238,7 @@ button:hover {
     <div id="characterDisplayContainer">
         <div id="characterDisplay">
             <img id="background" alt="">
+            <img id="backgroundblur" alt="">
             <img id="behindback" alt="">
             <img id="skin" alt="">
             <img id="eyes" alt="">
@@ -354,10 +356,21 @@ button:hover {
                 <img src="BACKGROUNDS/94.PNG" alt="Grey" onclick="selectTrait('background', 'BACKGROUNDS/94.PNG')">
                 <img src="BACKGROUNDS/95.PNG" alt="Grey" onclick="selectTrait('background', 'BACKGROUNDS/95.PNG')">
                 <img src="BACKGROUNDS/96.PNG" alt="Grey" onclick="selectTrait('background', 'BACKGROUNDS/96.PNG')">
+                <img src="BACKGROUNDS/97.PNG" alt="Grey" onclick="selectTrait('background', 'BACKGROUNDS/97.PNG')">
+
 
 
 
         </div>
+        </div>
+
+ <div class="trait-category" id="backgroundblurCategory">
+            <div class="trait-options">
+<img src="BACKGROUNDBLUR/AAA.PNG" alt="BEHINDBACK" onclick="selectTrait('backgroundblur', 'BACKGROUNDBLUR/AA.PNG')">
+<img src="BACKGROUNDBLUR/1.PNG" alt="BEHINDBACK" onclick="selectTrait('backgroundblur', 'BACKGROUNDBLUR/1.PNG')">
+<img src="BACKGROUNDBLUR/2.PNG" alt="BEHINDBACK" onclick="selectTrait('backgroundblur', 'BACKGROUNDBLUR/2.PNG')">
+
+            </div>
         </div>
         <div class="trait-category" id="skinCategory">
             <div class="trait-options">
@@ -860,6 +873,8 @@ button:hover {
 <img src="HATS/100.PNG" alt="HATS" onclick="selectTrait('hat', 'HATS/100.PNG')">
 <img src="HATS/101.PNG" alt="HATS" onclick="selectTrait('hat', 'HATS/101.PNG')">
 <img src="HATS/102.PNG" alt="HATS" onclick="selectTrait('hat', 'HATS/102.PNG')">
+<img src="HATS/103.PNG" alt="HATS" onclick="selectTrait('hat', 'HATS/103.PNG')">
+
 
 
 
@@ -988,6 +1003,9 @@ button:hover {
 <img src="HANDITEM2/7.PNG" alt="HANDITEM" onclick="selectTrait('ball', 'HANDITEM2/7.PNG')">
 <img src="HANDITEM2/8.PNG" alt="HANDITEM" onclick="selectTrait('ball', 'HANDITEM2/8.PNG')">
 <img src="HANDITEM2/9.PNG" alt="HANDITEM" onclick="selectTrait('ball', 'HANDITEM2/9.PNG')">
+<img src="HANDITEM2/10.PNG" alt="HANDITEM" onclick="selectTrait('ball', 'HANDITEM2/10.PNG')">
+<img src="HANDITEM2/11.PNG" alt="HANDITEM" onclick="selectTrait('ball', 'HANDITEM2/11.PNG')">
+
 
 
             </div>
@@ -1022,8 +1040,11 @@ function getImagePath(folder, index) {
 
 function randomizeCharacter() {
     // ---- BASE TRAITS ---- //
-    const backgroundIndex = getRandomIndex(96);
+    const backgroundIndex = getRandomIndex(97);
     selectTrait('background', getImagePath('BACKGROUNDS', backgroundIndex));
+
+    const backgroundblurIndex = getRandomIndex(2);
+    selectTrait('backgroundblur', getImagePath('BACKGROUND BLUR', backgroundblurIndex));
 
     const skinIndex = getRandomIndex(36);
     selectTrait('skin', getImagePath('SKIN', skinIndex));
@@ -1042,7 +1063,7 @@ function randomizeCharacter() {
         selectTrait('hair', getImagePath('HAIR', getRandomIndex(56)));
         selectTrait('hat', '');
     } else {
-        selectTrait('hat', getImagePath('HATS', getRandomIndex(102)));
+        selectTrait('hat', getImagePath('HATS', getRandomIndex(103)));
         selectTrait('hair', '');
     }
 
@@ -1065,7 +1086,7 @@ function randomizeCharacter() {
         selectTrait('ball', getImagePath('HANDITEM', getRandomIndex(11)));
     } else if (handCombo === 1) {
         selectTrait('hand2', getImagePath('HANDS2', skinIndex));
-        selectTrait('ball2', getImagePath('HANDITEM2', getRandomIndex(9)));
+        selectTrait('ball2', getImagePath('HANDITEM2', getRandomIndex(11)));
     }
 }
 </script>
