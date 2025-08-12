@@ -410,6 +410,9 @@ button:hover {
                 <img src="SKIN/34.PNG" alt="Skin 4" onclick="selectTrait('skin', 'SKIN/34.PNG')">
                 <img src="SKIN/35.PNG" alt="Skin 1" onclick="selectTrait('skin', 'SKIN/35.PNG')">
                 <img src="SKIN/36.PNG" alt="Skin 2" onclick="selectTrait('skin', 'SKIN/36.PNG')">
+                <img src="SKIN/37.PNG" alt="Skin 2" onclick="selectTrait('skin', 'SKIN/37.PNG')">
+
+
 
             </div>
         </div>
@@ -539,6 +542,10 @@ button:hover {
                 <img src="MOUTH/85.PNG" alt="Happy 1" onclick="selectTrait('mouth', 'MOUTH/85.PNG')">
                 <img src="MOUTH/86.PNG" alt="Happy 1" onclick="selectTrait('mouth', 'MOUTH/86.PNG')">
                 <img src="MOUTH/87.PNG" alt="Happy 1" onclick="selectTrait('mouth', 'MOUTH/87.PNG')">
+                <img src="MOUTH/88.PNG" alt="Happy 1" onclick="selectTrait('mouth', 'MOUTH/88.PNG')">
+                <img src="MOUTH/89.PNG" alt="Happy 1" onclick="selectTrait('mouth', 'MOUTH/89.PNG')">
+                <img src="MOUTH/90.PNG" alt="Happy 1" onclick="selectTrait('mouth', 'MOUTH/90.PNG')">
+                <img src="MOUTH/91.PNG" alt="Happy 1" onclick="selectTrait('mouth', 'MOUTH/91.PNG')">
 
 
             </div>
@@ -726,6 +733,8 @@ button:hover {
 <img src="CLOTHING/110.PNG" alt="CLOTHING" onclick="selectTrait('clothing', 'CLOTHING/110.PNG')">
 <img src="CLOTHING/111.PNG" alt="CLOTHING" onclick="selectTrait('clothing', 'CLOTHING/111.PNG')">
 <img src="CLOTHING/112.PNG" alt="CLOTHING" onclick="selectTrait('clothing', 'CLOTHING/112.PNG')">
+<img src="CLOTHING/113.PNG" alt="CLOTHING" onclick="selectTrait('clothing', 'CLOTHING/113.PNG')">
+<img src="CLOTHING/114.PNG" alt="CLOTHING" onclick="selectTrait('clothing', 'CLOTHING/114.PNG')">
 
 
             </div>
@@ -875,6 +884,11 @@ button:hover {
 <img src="HATS/102.PNG" alt="HATS" onclick="selectTrait('hat', 'HATS/102.PNG')">
 <img src="HATS/103.PNG" alt="HATS" onclick="selectTrait('hat', 'HATS/103.PNG')">
 <img src="HATS/104.PNG" alt="HATS" onclick="selectTrait('hat', 'HATS/104.PNG')">
+<img src="HATS/105.PNG" alt="HATS" onclick="selectTrait('hat', 'HATS/105.PNG')">
+<img src="HATS/106.PNG" alt="HATS" onclick="selectTrait('hat', 'HATS/106.PNG')">
+<img src="HATS/107.PNG" alt="HATS" onclick="selectTrait('hat', 'HATS/107.PNG')">
+
+
 
 
 
@@ -936,6 +950,8 @@ button:hover {
 <img src="HANDS/34.PNG" alt="HAND" onclick="selectTrait('hand', 'HANDS/34.PNG')">
 <img src="HANDS/35.PNG" alt="HAND" onclick="selectTrait('hand', 'HANDS/35.PNG')">
 <img src="HANDS/36.PNG" alt="HAND" onclick="selectTrait('hand', 'HANDS/36.PNG')">
+<img src="HANDS/37.PNG" alt="HAND" onclick="selectTrait('hand', 'HANDS/37.PNG')">
+
             </div>
         </div>
         <div class="trait-category" id="hand2Category"> 
@@ -977,6 +993,8 @@ button:hover {
 <img src="HANDS2/34.PNG" alt="HAND" onclick="selectTrait('hand', 'HANDS2/34.PNG')">
 <img src="HANDS2/35.PNG" alt="HAND" onclick="selectTrait('hand', 'HANDS2/35.PNG')">
 <img src="HANDS2/36.PNG" alt="HAND" onclick="selectTrait('hand', 'HANDS2/36.PNG')">
+<img src="HANDS2/37.PNG" alt="HAND" onclick="selectTrait('hand', 'HANDS2/37.PNG')">
+
             </div>
         </div>
         <div class="trait-category" id="ballCategory">
@@ -1054,16 +1072,16 @@ function randomizeCharacter() {
     const backgroundblurIndex = getRandomIndex(2);
     selectTrait('backgroundblur', getImagePath('BACKGROUND BLUR', backgroundblurIndex));
 
-    const skinIndex = getRandomIndex(36);
+    const skinIndex = getRandomIndex(37);
     selectTrait('skin', getImagePath('SKIN', skinIndex));
 
     const eyesIndex = getRandomIndex(32);
     selectTrait('eyes', getImagePath('EYES', eyesIndex));
 
-    const mouthIndex = getRandomIndex(87);
+    const mouthIndex = getRandomIndex(91);
     selectTrait('mouth', getImagePath('MOUTH', mouthIndex));
 
-    const clothingIndex = getRandomIndex(112);
+    const clothingIndex = getRandomIndex(114);
     selectTrait('clothing', getImagePath('CLOTHING', clothingIndex));
 
     // ---- HAIR / HAT ---- //
@@ -1071,7 +1089,7 @@ function randomizeCharacter() {
         selectTrait('hair', getImagePath('HAIR', getRandomIndex(56)));
         selectTrait('hat', '');
     } else {
-        selectTrait('hat', getImagePath('HATS', getRandomIndex(104)));
+        selectTrait('hat', getImagePath('HATS', getRandomIndex(107)));
         selectTrait('hair', '');
     }
 
