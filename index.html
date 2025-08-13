@@ -618,6 +618,8 @@ button:hover {
 <img src="HAIR/63.PNG" alt="Hair" onclick="selectTrait('hair', 'HAIR/63.PNG')">
 <img src="HAIR/64.PNG" alt="Hair" onclick="selectTrait('hair', 'HAIR/64.PNG')">
 <img src="HAIR/65.PNG" alt="Hair" onclick="selectTrait('hair', 'HAIR/65.PNG')">
+<img src="HAIR/66.PNG" alt="Hair" onclick="selectTrait('hair', 'HAIR/66.PNG')">
+
 
 
             </div>
@@ -741,6 +743,8 @@ button:hover {
 <img src="CLOTHING/112.PNG" alt="CLOTHING" onclick="selectTrait('clothing', 'CLOTHING/112.PNG')">
 <img src="CLOTHING/113.PNG" alt="CLOTHING" onclick="selectTrait('clothing', 'CLOTHING/113.PNG')">
 <img src="CLOTHING/114.PNG" alt="CLOTHING" onclick="selectTrait('clothing', 'CLOTHING/114.PNG')">
+<img src="CLOTHING/115.PNG" alt="CLOTHING" onclick="selectTrait('clothing', 'CLOTHING/115.PNG')">
+
 
 
             </div>
@@ -1087,15 +1091,15 @@ function randomizeCharacter() {
     const mouthIndex = getRandomIndex(91);
     selectTrait('mouth', getImagePath('MOUTH', mouthIndex));
 
-    const clothingIndex = getRandomIndex(114);
+    const clothingIndex = getRandomIndex(115);
     selectTrait('clothing', getImagePath('CLOTHING', clothingIndex));
 
     // ---- HAIR / HAT ---- //
     if (Math.random() < 0.5) {
-        selectTrait('hair', getImagePath('HAIR', getRandomIndex(56)));
+        selectTrait('hair', getImagePath('HAIR', getRandomIndex(66)));
         selectTrait('hat', '');
     } else {
-        selectTrait('hat', getImagePath('HATS', getRandomIndex(107)));
+        selectTrait('hat', getImagePath('HATS', getRandomIndex(108)));
         selectTrait('hair', '');
     }
 
