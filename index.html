@@ -5,6 +5,7 @@
 <title>Character Creator</title>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap" rel="stylesheet">
 <style>
+
 body {
     font-family: 'Fredoka One', cursive, sans-serif;
     background-image: linear-gradient(to right, #89f7fe, #66a6ff);
@@ -19,14 +20,14 @@ body {
 #headerImage {
     margin-top: 0px;
     width: auto;
-    height: 285px;
+    height: 250px;
 }
 #mainContent {
     display: flex;
     flex-direction: row;
     justify-content: center;
     align-items: flex-start;
-    width: 100%;
+    width: 75%;
     margin-top: 0px;
     flex-wrap: wrap;
 }
@@ -40,7 +41,7 @@ body {
     background: linear-gradient(to bottom, #89f7fe, #66a6ff);
     border-radius: 60px;
     box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    width: 100%;
+    width: 80%;
     margin-bottom: 10px;
 }
 .category-button {
@@ -55,45 +56,21 @@ body {
 .category-button:hover {
     opacity: 0.8;
 }
-.background-button {
-    background-color: #3498db;
+.category-button {
+    margin: 5px;
+    padding: 10px 20px;
+    font-size: 23px;
+    border-radius: 30px;
+    color: white;
+    border: none;
+    cursor: pointer;
+    background-color: #3498db; /* set one color for all */
 }
-.skin-button {
-    background-color: #3498db;
+
+.category-button:hover {
+    opacity: 0.8;
 }
-.face-button {
-    background-color: #3498db;
-}
-.clothing-button {
-    background-color: #2ecc71;
-}
-.eyes-button {
-    eyes-color: #2ecc71;
-}
-.hair-button {
-    background-color: #2ecc71;
-}
-.hairhoodie-button {
-    background-color: #c0392b;
-}
-.accessories-button {
-    background-color: #d35400;
-}
-.hat-button {
-    background-color: #2ecc71;
-}
-.hathoodie-button {
-    background-color: #c0392b;
-}
-.hoodieup-button {
-    background-color: #c0392b;
-}
-.hand-button {
-    background-color: #d35400;
-}
-.ball-button {
-    background-color: #d35400;
-}
+
 #characterDisplayContainer {
     display: flex;
     flex-direction: column;
@@ -123,7 +100,7 @@ body {
     width: 400px;
     height: 700px;
     background: linear-gradient(to bottom, #89f7fe, #66a6ff);
-    padding: 10px;
+    padding: 0px;
     border-radius: 8px;
     box-shadow: 0 4px 6px rgba(0,0,0,0.1);
     margin-left: 20px;
@@ -216,22 +193,20 @@ button:hover {
 <div id="mainContent">
     <div id="traitSelection">
         <button class="category-button background-button" onclick="showCategory('backgroundCategory')">BACKGROUNDS</button>
+        <button class="category-button clothing-button" onclick="showCategory('clothingCategory')">CLOTHING</button>
+        <button class="category-button hand-button" onclick="showCategory('handCategory')">HAND GESTURES 1</button>
+        <button class="category-button behindback-button" onclick="showCategory('behindbackCategory')">BEHIND BACK</button>
+        <button class="category-button skin-button" onclick="showCategory('skinCategory')">SKIN TONE</button>
+        <button class="category-button hat-button" onclick="showCategory('hatCategory')">HEADWEAR</button>
+        <button class="category-button ball-button" onclick="showCategory('ballCategory')">BALLS 1</button>
+        <button class="category-button goo" onclick="showCategory('gooCategory')">ABOVE HEAD</button>
+        <button class="category-button eyes-button" onclick="showCategory('eyesCategory')">EYES</button>
+        <button class="category-button hair-button" onclick="showCategory('hairCategory')">HAIRSTYLES</button>
+        <button class="category-button hair-button" onclick="showCategory('hand2Category')">HAND GESTURES 2</button>
         <button class="category-button backgroundblur-button" onclick="showCategory('backgroundblurCategory')">BACKGROUND BLUR</button>
         <button class="category-button mouth-button" onclick="showCategory('mouthCategory')">MOUTH</button>
-        <button class="category-button hand-button" onclick="showCategory('handCategory')">HAND GESTURES 1</button>
-        <button class="category-button hair-button" onclick="showCategory('hand2Category')">HAND GESTURES 2</button>
-        <button class="category-button skin-button" onclick="showCategory('skinCategory')">SKIN TONE</button>
-        <button class="category-button clothing-button" onclick="showCategory('clothingCategory')">CLOTHING</button>
-        <button class="category-button ball-button" onclick="showCategory('ballCategory')">BALLS 1</button>
-        <button class="category-button hat-button" onclick="showCategory('ball2Category')">BALLS 2</button>
-        <button class="category-button eyes-button" onclick="showCategory('eyesCategory')">EYES</button>
         <button class="category-button accessories-button" onclick="showCategory('accessoriesCategory')">SUNGLASSES</button>
-        <button class="category-button hair-button" onclick="showCategory('hairCategory')">HAIRSTYLES</button>
-        <button class="category-button hat-button" onclick="showCategory('hatCategory')">HEADWEAR</button>
-        <button class="category-button behindback-button" onclick="showCategory('behindbackCategory')">BEHIND BACK</button>
-        <button class="category-button goo" onclick="showCategory('gooCategory')">ABOVE HEAD</button>
-
-
+        <button class="category-button hat-button" onclick="showCategory('ball2Category')">BALLS 2</button>
 
     </div>
 
@@ -244,8 +219,8 @@ button:hover {
             <img id="eyes" alt="">
             <img id="clothing" alt="">
             <img id="mouth" alt="">
-	    <img id="accessories" alt="">
             <img id="hair" alt="">
+	    <img id="accessories" alt="">
             <img id="hat" alt="">
             <img id="goo" alt="">
             <img id="ball" alt="">
