@@ -896,6 +896,10 @@ button:hover {
 <img src="HATS/107.PNG" alt="HATS" onclick="selectTrait('hat', 'HATS/107.PNG')">
 <img src="HATS/108.PNG" alt="HATS" onclick="selectTrait('hat', 'HATS/108.PNG')">
 <img src="HATS/109.PNG" alt="HATS" onclick="selectTrait('hat', 'HATS/109.PNG')">
+<img src="HATS/110.PNG" alt="HATS" onclick="selectTrait('hat', 'HATS/110.PNG')">
+<img src="HATS/111.PNG" alt="HATS" onclick="selectTrait('hat', 'HATS/111.PNG')">
+
+
 
 
 
@@ -1041,6 +1045,8 @@ button:hover {
 <img src="HANDITEM2/13.PNG" alt="HANDITEM" onclick="selectTrait('ball', 'HANDITEM2/13.PNG')">
 <img src="HANDITEM2/14.PNG" alt="HANDITEM" onclick="selectTrait('ball', 'HANDITEM2/14.PNG')">
 <img src="HANDITEM2/15.PNG" alt="HANDITEM" onclick="selectTrait('ball', 'HANDITEM2/15.PNG')">
+<img src="HANDITEM2/16.PNG" alt="HANDITEM" onclick="selectTrait('ball', 'HANDITEM2/16.PNG')">
+
 
 
 
@@ -1103,7 +1109,7 @@ function randomizeCharacter() {
         selectTrait('hair', getImagePath('HAIR', getRandomIndex(66)));
         selectTrait('hat', '');
     } else {
-        selectTrait('hat', getImagePath('HATS', getRandomIndex(110)));
+        selectTrait('hat', getImagePath('HATS', getRandomIndex(111)));
         selectTrait('hair', '');
     }
 
@@ -1126,7 +1132,7 @@ function randomizeCharacter() {
         selectTrait('ball', getImagePath('HANDITEM', getRandomIndex(11)));
     } else if (handCombo === 1) {
         selectTrait('hand2', getImagePath('HANDS2', skinIndex));
-        selectTrait('ball2', getImagePath('HANDITEM2', getRandomIndex(15)));
+        selectTrait('ball2', getImagePath('HANDITEM2', getRandomIndex(16)));
     }
 }
 </script>
