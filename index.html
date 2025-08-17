@@ -17,6 +17,7 @@ body {
     align-items: center;
     overflow-x: hidden;
 }
+
 #headerImage {
     margin-top: 0px;
     width: auto;
@@ -78,20 +79,27 @@ body {
     margin: 0 20px;
     order: 2;
 }
+/* create a predictable square that scales */
 #characterDisplay {
-    position: relative;
-    width: 700px;
-    height: 700px;
-    border: 0px solid #666;
-    background-color: #fff;
-    box-shadow: 0 8px 16px rgba(0,0,0,0.2);
-    margin-bottom: 20px;
+  position: relative;
+  width: min(90vw, 700px);     /* scale down on small screens, cap on desktop */
+  aspect-ratio: 1 / 1;         /* stay square instead of hard-coding height */
+  height: auto;                 /* aspect-ratio will handle height */
+  border: 0;
+  background:#fff;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+  margin-bottom: 20px;
 }
+
+/* layered images fill the square without distortion */
 #characterDisplay img {
-    position: absolute;
-    width: 100%;
-    height: 100%;
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;   /* prevents stretching on iPhone */
 }
+
 #traitPictures {
     display: flex;
     flex-direction: column;
@@ -185,6 +193,7 @@ button:hover {
         margin-left: 0;
     }
 }
+
 </style>
 </head>
 <body>
@@ -195,20 +204,22 @@ button:hover {
         <button class="category-button background-button" onclick="showCategory('backgroundCategory')">BACKGROUNDS</button>
         <button class="category-button clothing-button" onclick="showCategory('clothingCategory')">CLOTHING</button>
         <button class="category-button hand-button" onclick="showCategory('handCategory')">HAND GESTURES 1</button>
-        <button class="category-button behindback-button" onclick="showCategory('behindbackCategory')">BEHIND BACK</button>
+        <button class="category-button backgroundblur-button" onclick="showCategory('backgroundblurCategory')">BACKGROUND BLUR</button>
         <button class="category-button skin-button" onclick="showCategory('skinCategory')">SKIN TONE</button>
         <button class="category-button hat-button" onclick="showCategory('hatCategory')">HEADWEAR</button>
         <button class="category-button ball-button" onclick="showCategory('ballCategory')">BALLS 1</button>
-        <button class="category-button goo" onclick="showCategory('gooCategory')">ABOVE HEAD</button>
-        <button class="category-button eyes-button" onclick="showCategory('eyesCategory')">EYES</button>
+        <button class="category-button behindback-button" onclick="showCategory('behindbackCategory')">BEHIND BACK</button>
+        <button class="category-button mouth-button" onclick="showCategory('mouthCategory')">MOUTH</button>
         <button class="category-button hair-button" onclick="showCategory('hairCategory')">HAIRSTYLES</button>
         <button class="category-button hair-button" onclick="showCategory('hand2Category')">HAND GESTURES 2</button>
-        <button class="category-button backgroundblur-button" onclick="showCategory('backgroundblurCategory')">BACKGROUND BLUR</button>
-        <button class="category-button mouth-button" onclick="showCategory('mouthCategory')">MOUTH</button>
+        <button class="category-button goo" onclick="showCategory('gooCategory')">ABOVE HEAD</button>
+        <button class="category-button eyes-button" onclick="showCategory('eyesCategory')">EYES</button>
         <button class="category-button accessories-button" onclick="showCategory('accessoriesCategory')">SUNGLASSES</button>
         <button class="category-button hat-button" onclick="showCategory('ball2Category')">BALLS 2</button>
 
     </div>
+
+
 
     <div id="characterDisplayContainer">
         <div id="characterDisplay">
@@ -332,6 +343,9 @@ button:hover {
                 <img src="BACKGROUNDS/95.PNG" alt="Grey" onclick="selectTrait('background', 'BACKGROUNDS/95.PNG')">
                 <img src="BACKGROUNDS/96.PNG" alt="Grey" onclick="selectTrait('background', 'BACKGROUNDS/96.PNG')">
                 <img src="BACKGROUNDS/97.PNG" alt="Grey" onclick="selectTrait('background', 'BACKGROUNDS/97.PNG')">
+                <img src="BACKGROUNDS/98.PNG" alt="Grey" onclick="selectTrait('background', 'BACKGROUNDS/98.PNG')">
+                <img src="BACKGROUNDS/99.PNG" alt="Grey" onclick="selectTrait('background', 'BACKGROUNDS/99.PNG')">
+
 
 
 
@@ -616,6 +630,7 @@ button:hover {
 <img src="CLOTHING/10.PNG" alt="CLOTHING" onclick="selectTrait('clothing', 'CLOTHING/10.PNG')">
 <img src="CLOTHING/11.PNG" alt="CLOTHING" onclick="selectTrait('clothing', 'CLOTHING/11.PNG')">
 <img src="CLOTHING/12.PNG" alt="CLOTHING" onclick="selectTrait('clothing', 'CLOTHING/12.PNG')">
+<img src="CLOTHING/12A.PNG" alt="CLOTHING" onclick="selectTrait('clothing', 'CLOTHING/12A.PNG')">
 <img src="CLOTHING/13.PNG" alt="CLOTHING" onclick="selectTrait('clothing', 'CLOTHING/13.PNG')">
 <img src="CLOTHING/14.PNG" alt="CLOTHING" onclick="selectTrait('clothing', 'CLOTHING/14.PNG')">
 <img src="CLOTHING/15.PNG" alt="CLOTHING" onclick="selectTrait('clothing', 'CLOTHING/15.PNG')">
@@ -719,6 +734,11 @@ button:hover {
 <img src="CLOTHING/113.PNG" alt="CLOTHING" onclick="selectTrait('clothing', 'CLOTHING/113.PNG')">
 <img src="CLOTHING/114.PNG" alt="CLOTHING" onclick="selectTrait('clothing', 'CLOTHING/114.PNG')">
 <img src="CLOTHING/115.PNG" alt="CLOTHING" onclick="selectTrait('clothing', 'CLOTHING/115.PNG')">
+<img src="CLOTHING/116.PNG" alt="CLOTHING" onclick="selectTrait('clothing', 'CLOTHING/116.PNG')">
+<img src="CLOTHING/117.PNG" alt="CLOTHING" onclick="selectTrait('clothing', 'CLOTHING/117.PNG')">
+<img src="CLOTHING/118.PNG" alt="CLOTHING" onclick="selectTrait('clothing', 'CLOTHING/118.PNG')">
+
+
 
 
 
@@ -748,6 +768,8 @@ button:hover {
 <img src="GLASSES/18.PNG" alt="GLASSES" onclick="selectTrait('accessories', 'GLASSES/18.PNG')">
 <img src="GLASSES/19.PNG" alt="GLASSES" onclick="selectTrait('accessories', 'GLASSES/19.PNG')">
 <img src="GLASSES/20.PNG" alt="GLASSES" onclick="selectTrait('accessories', 'GLASSES/20.PNG')">
+<img src="GLASSES/21.PNG" alt="GLASSES" onclick="selectTrait('accessories', 'GLASSES/21.PNG')">
+
 
             </div>
         </div>
@@ -872,6 +894,9 @@ button:hover {
 <img src="HATS/105.PNG" alt="HATS" onclick="selectTrait('hat', 'HATS/105.PNG')">
 <img src="HATS/106.PNG" alt="HATS" onclick="selectTrait('hat', 'HATS/106.PNG')">
 <img src="HATS/107.PNG" alt="HATS" onclick="selectTrait('hat', 'HATS/107.PNG')">
+<img src="HATS/108.PNG" alt="HATS" onclick="selectTrait('hat', 'HATS/108.PNG')">
+<img src="HATS/109.PNG" alt="HATS" onclick="selectTrait('hat', 'HATS/109.PNG')">
+
 
 
 
@@ -1014,6 +1039,10 @@ button:hover {
 <img src="HANDITEM2/11.PNG" alt="HANDITEM" onclick="selectTrait('ball', 'HANDITEM2/11.PNG')">
 <img src="HANDITEM2/12.PNG" alt="HANDITEM" onclick="selectTrait('ball', 'HANDITEM2/12.PNG')">
 <img src="HANDITEM2/13.PNG" alt="HANDITEM" onclick="selectTrait('ball', 'HANDITEM2/13.PNG')">
+<img src="HANDITEM2/14.PNG" alt="HANDITEM" onclick="selectTrait('ball', 'HANDITEM2/14.PNG')">
+<img src="HANDITEM2/15.PNG" alt="HANDITEM" onclick="selectTrait('ball', 'HANDITEM2/15.PNG')">
+
+
 
 
 
@@ -1051,7 +1080,7 @@ function getImagePath(folder, index) {
 
 function randomizeCharacter() {
     // ---- BASE TRAITS ---- //
-    const backgroundIndex = getRandomIndex(97);
+    const backgroundIndex = getRandomIndex(99);
     selectTrait('background', getImagePath('BACKGROUNDS', backgroundIndex));
 
     const backgroundblurIndex = getRandomIndex(2);
@@ -1066,7 +1095,7 @@ function randomizeCharacter() {
     const mouthIndex = getRandomIndex(91);
     selectTrait('mouth', getImagePath('MOUTH', mouthIndex));
 
-    const clothingIndex = getRandomIndex(115);
+    const clothingIndex = getRandomIndex(118);
     selectTrait('clothing', getImagePath('CLOTHING', clothingIndex));
 
     // ---- HAIR / HAT ---- //
@@ -1074,12 +1103,12 @@ function randomizeCharacter() {
         selectTrait('hair', getImagePath('HAIR', getRandomIndex(66)));
         selectTrait('hat', '');
     } else {
-        selectTrait('hat', getImagePath('HATS', getRandomIndex(108)));
+        selectTrait('hat', getImagePath('HATS', getRandomIndex(110)));
         selectTrait('hair', '');
     }
 
     // ---- OPTIONAL TRAITS ---- //
-    selectTrait('accessories', Math.random() < 0.5 ? getImagePath('GLASSES', getRandomIndex(20)) : '');
+    selectTrait('accessories', Math.random() < 0.5 ? getImagePath('GLASSES', getRandomIndex(21)) : '');
     selectTrait('behindback', Math.random() < 0.5 ? getImagePath('BEHINDBACK', getRandomIndex(4)) : '');
     selectTrait('goo', Math.random() < 0.5 ? getImagePath('GOO', getRandomIndex(5)) : '');
 
@@ -1097,7 +1126,7 @@ function randomizeCharacter() {
         selectTrait('ball', getImagePath('HANDITEM', getRandomIndex(11)));
     } else if (handCombo === 1) {
         selectTrait('hand2', getImagePath('HANDS2', skinIndex));
-        selectTrait('ball2', getImagePath('HANDITEM2', getRandomIndex(13)));
+        selectTrait('ball2', getImagePath('HANDITEM2', getRandomIndex(15)));
     }
 }
 </script>
