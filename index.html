@@ -1029,6 +1029,12 @@ button:hover {
 <img src="HANDITEM/9.PNG" alt="HANDITEM" onclick="selectTrait('ball', 'HANDITEM/9.PNG')">
 <img src="HANDITEM/10.PNG" alt="HANDITEM" onclick="selectTrait('ball', 'HANDITEM/10.PNG')">
 <img src="HANDITEM/11.PNG" alt="HANDITEM" onclick="selectTrait('ball', 'HANDITEM/11.PNG')">
+<img src="HANDITEM/12.PNG" alt="HANDITEM" onclick="selectTrait('ball', 'HANDITEM/12.PNG')">
+<img src="HANDITEM/13.PNG" alt="HANDITEM" onclick="selectTrait('ball', 'HANDITEM/13.PNG')">
+<img src="HANDITEM/14.PNG" alt="HANDITEM" onclick="selectTrait('ball', 'HANDITEM/14.PNG')">
+<img src="HANDITEM/15.PNG" alt="HANDITEM" onclick="selectTrait('ball', 'HANDITEM/15.PNG')">
+
+
             </div>
         </div>
         <div class="trait-category" id="ball2Category">
@@ -1051,6 +1057,8 @@ button:hover {
 <img src="HANDITEM2/15.PNG" alt="HANDITEM" onclick="selectTrait('ball', 'HANDITEM2/15.PNG')">
 <img src="HANDITEM2/16.PNG" alt="HANDITEM" onclick="selectTrait('ball', 'HANDITEM2/16.PNG')">
 <img src="HANDITEM2/17.PNG" alt="HANDITEM" onclick="selectTrait('ball', 'HANDITEM2/17.PNG')">
+<img src="HANDITEM2/18.PNG" alt="HANDITEM" onclick="selectTrait('ball', 'HANDITEM2/18.PNG')">
+
 
 
 
@@ -1135,10 +1143,10 @@ function randomizeCharacter() {
 
     if (handCombo === 0) {
         selectTrait('hand', getImagePath('HANDS', skinIndex));
-        selectTrait('ball', getImagePath('HANDITEM', getRandomIndex(11)));
+        selectTrait('ball', getImagePath('HANDITEM', getRandomIndex(14)));
     } else if (handCombo === 1) {
         selectTrait('hand2', getImagePath('HANDS2', skinIndex));
-        selectTrait('ball2', getImagePath('HANDITEM2', getRandomIndex(17)));
+        selectTrait('ball2', getImagePath('HANDITEM2', getRandomIndex(18)));
     }
 }
 </script>
