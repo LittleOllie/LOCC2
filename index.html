@@ -737,6 +737,8 @@ button:hover {
 <img src="CLOTHING/116.PNG" alt="CLOTHING" onclick="selectTrait('clothing', 'CLOTHING/116.PNG')">
 <img src="CLOTHING/117.PNG" alt="CLOTHING" onclick="selectTrait('clothing', 'CLOTHING/117.PNG')">
 <img src="CLOTHING/118.PNG" alt="CLOTHING" onclick="selectTrait('clothing', 'CLOTHING/118.PNG')">
+<img src="CLOTHING/119.PNG" alt="CLOTHING" onclick="selectTrait('clothing', 'CLOTHING/119.PNG')">
+
 
 
 
@@ -907,6 +909,8 @@ button:hover {
 <img src="HATS/112.PNG" alt="HATS" onclick="selectTrait('hat', 'HATS/112.PNG')">
 <img src="HATS/113.PNG" alt="HATS" onclick="selectTrait('hat', 'HATS/113.PNG')">
 <img src="HATS/114.PNG" alt="HATS" onclick="selectTrait('hat', 'HATS/114.PNG')">
+<img src="HATS/115.PNG" alt="HATS" onclick="selectTrait('hat', 'HATS/115.PNG')">
+
 
 
 </div>
@@ -919,6 +923,8 @@ button:hover {
 <img src="GOO/3.PNG" alt="GOO" onclick="selectTrait('goo', 'GOO/3.PNG')">
 <img src="GOO/4.PNG" alt="GOO" onclick="selectTrait('goo', 'GOO/4.PNG')">
 <img src="GOO/5.PNG" alt="GOO" onclick="selectTrait('goo', 'GOO/5.PNG')">
+<img src="GOO/6.PNG" alt="GOO" onclick="selectTrait('goo', 'GOO/6.PNG')">
+
 
 
 
@@ -1111,7 +1117,7 @@ function randomizeCharacter() {
     const mouthIndex = getRandomIndex(91);
     selectTrait('mouth', getImagePath('MOUTH', mouthIndex));
 
-    const clothingIndex = getRandomIndex(118);
+    const clothingIndex = getRandomIndex(119);
     selectTrait('clothing', getImagePath('CLOTHING', clothingIndex));
 
     // ---- HAIR / HAT ---- //
@@ -1119,14 +1125,14 @@ function randomizeCharacter() {
         selectTrait('hair', getImagePath('HAIR', getRandomIndex(66)));
         selectTrait('hat', '');
     } else {
-        selectTrait('hat', getImagePath('HATS', getRandomIndex(114)));
+        selectTrait('hat', getImagePath('HATS', getRandomIndex(115)));
         selectTrait('hair', '');
     }
 
     // ---- OPTIONAL TRAITS ---- //
     selectTrait('accessories', Math.random() < 0.5 ? getImagePath('GLASSES', getRandomIndex(24)) : '');
     selectTrait('behindback', Math.random() < 0.5 ? getImagePath('BEHINDBACK', getRandomIndex(4)) : '');
-    selectTrait('goo', Math.random() < 0.5 ? getImagePath('GOO', getRandomIndex(5)) : '');
+    selectTrait('goo', Math.random() < 0.5 ? getImagePath('GOO', getRandomIndex(6)) : '');
 
     // ---- CLEAR HANDS ---- //
     selectTrait('hand', '');
