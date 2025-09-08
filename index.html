@@ -239,7 +239,10 @@ button:hover {
             <img id="ball2" alt="">
             <img id="hand2" alt="">
         </div>
-        <button id="randomButton" onclick="randomizeCharacter()">Randomize</button>            <img id="accessories" alt="">
+        <button id="randomButton" onclick="randomizeCharacter()">Randomize</button>
+        <button id="downloadColor">Download PNG (Color)</button>
+        <button id="downloadBW">Download PNG (B&W Coloring)</button>
+
 
     </div>
 
@@ -942,6 +945,9 @@ button:hover {
 <img src="HATS/118.PNG" alt="HATS" onclick="selectTrait('hat', 'HATS/118.PNG')">
 <img src="HATS/119.PNG" alt="HATS" onclick="selectTrait('hat', 'HATS/119.PNG')">
 <img src="HATS/120.PNG" alt="HATS" onclick="selectTrait('hat', 'HATS/120.PNG')">
+<img src="HATS/121.PNG" alt="HATS" onclick="selectTrait('hat', 'HATS/121.PNG')">
+<img src="HATS/122.PNG" alt="HATS" onclick="selectTrait('hat', 'HATS/122.PNG')">
+
 
 
 
@@ -1121,6 +1127,89 @@ button:hover {
 </div>
 
 <script>
+
+// ====== DOWNLOAD COMPOSITE (COLOR / B&W) ======
+(function() {
+  const OUTPUT_SIZE = 2048;           // 1024–4096; bigger = crisper print
+  const WHITE_BG_FOR_PRINT = true;    // true => solid white background
+  const BW_THRESHOLD = 200;           // 0–255; higher = more white
+  const BOOST_CONTRAST = true;        // makes outlines pop before B&W
+
+  const stage = document.getElementById('characterDisplay');
+  const btnColor = document.getElementById('downloadColor');
+  const btnBW = document.getElementById('downloadBW');
+
+  function getLayers() {
+    // All <img> inside #characterDisplay, in DOM order (your stacking order)
+    return Array.from(stage.querySelectorAll('img'))
+      .filter(img => img.src && img.complete);
+  }
+
+  function renderComposite({ toBW = false } = {}) {
+    const canvas = document.createElement('canvas');
+    canvas.width = OUTPUT_SIZE;
+    canvas.height = OUTPUT_SIZE;
+    const ctx = canvas.getContext('2d');
+
+    if (WHITE_BG_FOR_PRINT) {
+      ctx.fillStyle = '#fff';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+    }
+
+    const layers = getLayers();
+    layers.forEach(img => {
+      // Draw each layer scaled to the square canvas
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+    });
+
+    if (toBW) {
+      const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      const d = imgData.data;
+
+      if (BOOST_CONTRAST) {
+        const contrast = 1.25; // 1 = none; 1.25–1.4 is a good range
+        const intercept = 128 * (1 - contrast);
+        for (let i = 0; i < d.length; i += 4) {
+          d[i]   = Math.max(0, Math.min(255, d[i]   * contrast + intercept));
+          d[i+1] = Math.max(0, Math.min(255, d[i+1] * contrast + intercept));
+          d[i+2] = Math.max(0, Math.min(255, d[i+2] * contrast + intercept));
+        }
+      }
+
+      for (let i = 0; i < d.length; i += 4) {
+        const r = d[i], g = d[i+1], b = d[i+2], a = d[i+3];
+        if (!WHITE_BG_FOR_PRINT && a < 10) continue; // keep transparency if wanted
+        const gray = 0.2126*r + 0.7152*g + 0.0722*b; // perceptual luma
+        const v = gray >= BW_THRESHOLD ? 255 : 0;     // pure B/W for coloring
+        d[i] = d[i+1] = d[i+2] = v;
+        d[i+3] = 255;
+      }
+      ctx.putImageData(imgData, 0, 0);
+    }
+
+    return canvas;
+  }
+
+  function downloadCanvas(canvas, filename = 'LittleOllie.png') {
+    const a = document.createElement('a');
+    a.download = filename;
+    a.href = canvas.toDataURL('image/png');
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+  }
+
+  btnColor.addEventListener('click', () => {
+    const c = renderComposite({ toBW: false });
+    downloadCanvas(c, 'LittleOllie_Colour.png');
+  });
+
+  btnBW.addEventListener('click', () => {
+    const c = renderComposite({ toBW: true });
+    downloadCanvas(c, 'LittleOllie_ColouringPage.png');
+  });
+})();
+
 function selectTrait(category, filename) {
     if (filename) {
         document.getElementById(category).src = filename;
@@ -1151,7 +1240,7 @@ function randomizeCharacter() {
     selectTrait('background', getImagePath('BACKGROUNDS', backgroundIndex));
 
     const backgroundblurIndex = getRandomIndex(2);
-    selectTrait('backgroundblur', getImagePath('BACKGROUND BLUR', backgroundblurIndex));
+    selectTrait('backgroundblur', getImagePath('BACKGROUNDBLUR', backgroundblurIndex));
 
     const skinIndex = getRandomIndex(39);
     selectTrait('skin', getImagePath('SKIN', skinIndex));
