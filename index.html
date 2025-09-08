@@ -1145,49 +1145,130 @@ button:hover {
       .filter(img => img.src && img.complete);
   }
 
-  function renderComposite({ toBW = false } = {}) {
-    const canvas = document.createElement('canvas');
-    canvas.width = OUTPUT_SIZE;
-    canvas.height = OUTPUT_SIZE;
-    const ctx = canvas.getContext('2d');
+function renderComposite({ toBW = false } = {}) {
+  const canvas = document.createElement('canvas');
+  const OUTPUT_SIZE = 2048;            // bump to 3072/4096 for crisper print
+  canvas.width = OUTPUT_SIZE;
+  canvas.height = OUTPUT_SIZE;
+  const ctx = canvas.getContext('2d');
 
-    if (WHITE_BG_FOR_PRINT) {
-      ctx.fillStyle = '#fff';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
+  // Always start with a white sheet for print
+  ctx.fillStyle = '#fff';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  // Collect layers in DOM order
+  const layers = Array.from(document
+    .getElementById('characterDisplay')
+    .querySelectorAll('img'))
+    .filter(img => img.src && img.complete);
+
+  // In B&W mode we SKIP background layers so the page stays white
+  const shouldSkipInBW = (img) => {
+    const id = img.id || '';
+    return toBW && (id === 'background' || id === 'backgroundblur');
+  };
+
+  // First pass: draw the chosen layers (skip BG in BW)
+  layers.forEach(img => {
+    if (shouldSkipInBW(img)) return;
+    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+  });
+
+  if (!toBW) return canvas;
+
+  // ====== B&W LINE ART via Sobel edge detection ======
+  const src = ctx.getImageData(0, 0, canvas.width, canvas.height);
+  const d = src.data;
+  const w = src.width, h = src.height;
+
+  // 1) Grayscale
+  for (let i = 0; i < d.length; i += 4) {
+    const r = d[i], g = d[i+1], b = d[i+2];
+    const gray = 0.2126*r + 0.7152*g + 0.0722*b;
+    d[i] = d[i+1] = d[i+2] = gray;
+  }
+
+  // 2) Optional slight blur to reduce speckle (3x3 box blur)
+  const blur = (img) => {
+    const out = new Uint8ClampedArray(img.data);
+    for (let y = 1; y < h - 1; y++) {
+      for (let x = 1; x < w - 1; x++) {
+        let sum = 0, idx = 0;
+        for (let ky = -1; ky <= 1; ky++) {
+          for (let kx = -1; kx <= 1; kx++) {
+            const p = ((y + ky) * w + (x + kx)) * 4;
+            sum += img.data[p]; // grayscale in R
+            idx++;
+          }
+        }
+        const p0 = (y * w + x) * 4;
+        const v = sum / 9;
+        out[p0] = out[p0+1] = out[p0+2] = v;
+      }
     }
+    img.data.set(out);
+  };
+  blur(src);
 
-    const layers = getLayers();
-    layers.forEach(img => {
-      // Draw each layer scaled to the square canvas
-      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-    });
+  // 3) Sobel edge magnitude
+  const sobel = new Uint8ClampedArray(w * h);
+  const get = (x, y) => {
+    const i = (y * w + x) * 4;
+    return d[i]; // grayscale
+  };
+  for (let y = 1; y < h - 1; y++) {
+    for (let x = 1; x < w - 1; x++) {
+      const gx =
+        -1*get(x-1,y-1) + 1*get(x+1,y-1) +
+        -2*get(x-1,y  ) + 2*get(x+1,y  ) +
+        -1*get(x-1,y+1) + 1*get(x+1,y+1);
+      const gy =
+         1*get(x-1,y-1) + 2*get(x,y-1) + 1*get(x+1,y-1) +
+        -1*get(x-1,y+1) - 2*get(x,y+1) - 1*get(x+1,y+1);
+      let mag = Math.sqrt(gx*gx + gy*gy);
+      if (mag > 255) mag = 255;
+      sobel[y * w + x] = mag;
+    }
+  }
 
-    if (toBW) {
-      const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-      const d = imgData.data;
+  // 4) Threshold edges to black lines on white
+  const EDGE_THRESHOLD = 60;  // lower => more lines; higher => cleaner
+  for (let y = 0; y < h; y++) {
+    for (let x = 0; x < w; x++) {
+      const p = (y * w + x) * 4;
+      const edge = sobel[y * w + x];
+      const isLine = edge > EDGE_THRESHOLD;
+      const v = isLine ? 0 : 255; // black line, white background
+      d[p] = d[p+1] = d[p+2] = v;
+      d[p+3] = 255;
+    }
+  }
 
-      if (BOOST_CONTRAST) {
-        const contrast = 1.25; // 1 = none; 1.25–1.4 is a good range
-        const intercept = 128 * (1 - contrast);
-        for (let i = 0; i < d.length; i += 4) {
-          d[i]   = Math.max(0, Math.min(255, d[i]   * contrast + intercept));
-          d[i+1] = Math.max(0, Math.min(255, d[i+1] * contrast + intercept));
-          d[i+2] = Math.max(0, Math.min(255, d[i+2] * contrast + intercept));
+  // 5) Optional thicken lines (one cheap “dilate” pass)
+  const thicken = true;
+  if (thicken) {
+    const copy = new Uint8ClampedArray(d);
+    const idx = (x,y) => (y*w + x)*4;
+    for (let y = 1; y < h - 1; y++) {
+      for (let x = 1; x < w - 1; x++) {
+        const p = idx(x,y);
+        // if center is white, but any neighbour is black, make it dark gray
+        if (copy[p] === 255) {
+          if (
+            copy[idx(x-1,y  )] === 0 || copy[idx(x+1,y  )] === 0 ||
+            copy[idx(x  ,y-1)] === 0 || copy[idx(x  ,y+1)] === 0
+          ) {
+            d[p] = d[p+1] = d[p+2] = 0; // make it black (or try 64 for softer)
+          }
         }
       }
-
-      for (let i = 0; i < d.length; i += 4) {
-        const r = d[i], g = d[i+1], b = d[i+2], a = d[i+3];
-        if (!WHITE_BG_FOR_PRINT && a < 10) continue; // keep transparency if wanted
-        const gray = 0.2126*r + 0.7152*g + 0.0722*b; // perceptual luma
-        const v = gray >= BW_THRESHOLD ? 255 : 0;     // pure B/W for coloring
-        d[i] = d[i+1] = d[i+2] = v;
-        d[i+3] = 255;
-      }
-      ctx.putImageData(imgData, 0, 0);
     }
+  }
 
-    return canvas;
+  ctx.putImageData(src, 0, 0);
+  return canvas;
+}
+
   }
 
   function downloadCanvas(canvas, filename = 'LittleOllie.png') {
@@ -1259,7 +1340,7 @@ function randomizeCharacter() {
         selectTrait('hair', getImagePath('HAIR', getRandomIndex(66)));
         selectTrait('hat', '');
     } else {
-        selectTrait('hat', getImagePath('HATS', getRandomIndex(120)));
+        selectTrait('hat', getImagePath('HATS', getRandomIndex(122)));
         selectTrait('hair', '');
     }
 
