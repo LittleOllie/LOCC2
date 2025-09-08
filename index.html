@@ -1125,153 +1125,203 @@ button:hover {
         </div>
     </div>
 </div>
-
 <script>
-
-// ====== DOWNLOAD COMPOSITE (COLOR / B&W) ======
-(function() {
-  const OUTPUT_SIZE = 2048;           // 1024–4096; bigger = crisper print
-  const WHITE_BG_FOR_PRINT = true;    // true => solid white background
-  const BW_THRESHOLD = 200;           // 0–255; higher = more white
-  const BOOST_CONTRAST = true;        // makes outlines pop before B&W
-
-  const stage = document.getElementById('characterDisplay');
-  const btnColor = document.getElementById('downloadColor');
-  const btnBW = document.getElementById('downloadBW');
-
-  function getLayers() {
-    // All <img> inside #characterDisplay, in DOM order (your stacking order)
-    return Array.from(stage.querySelectorAll('img'))
-      .filter(img => img.src && img.complete);
-  }
-
-function renderComposite({ toBW = false } = {}) {
-  const canvas = document.createElement('canvas');
-  const OUTPUT_SIZE = 2048;            // bump to 3072/4096 for crisper print
-  canvas.width = OUTPUT_SIZE;
-  canvas.height = OUTPUT_SIZE;
-  const ctx = canvas.getContext('2d');
-
-  // Always start with a white sheet for print
-  ctx.fillStyle = '#fff';
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-  // Collect layers in DOM order
-  const layers = Array.from(document
-    .getElementById('characterDisplay')
-    .querySelectorAll('img'))
-    .filter(img => img.src && img.complete);
-
-  // In B&W mode we SKIP background layers so the page stays white
-  const shouldSkipInBW = (img) => {
-    const id = img.id || '';
-    return toBW && (id === 'background' || id === 'backgroundblur');
-  };
-
-  // First pass: draw the chosen layers (skip BG in BW)
-  layers.forEach(img => {
-    if (shouldSkipInBW(img)) return;
-    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-  });
-
-  if (!toBW) return canvas;
-
-  // ====== B&W LINE ART via Sobel edge detection ======
-  const src = ctx.getImageData(0, 0, canvas.width, canvas.height);
-  const d = src.data;
-  const w = src.width, h = src.height;
-
-  // 1) Grayscale
-  for (let i = 0; i < d.length; i += 4) {
-    const r = d[i], g = d[i+1], b = d[i+2];
-    const gray = 0.2126*r + 0.7152*g + 0.0722*b;
-    d[i] = d[i+1] = d[i+2] = gray;
-  }
-
-  // 2) Optional slight blur to reduce speckle (3x3 box blur)
-  const blur = (img) => {
-    const out = new Uint8ClampedArray(img.data);
-    for (let y = 1; y < h - 1; y++) {
-      for (let x = 1; x < w - 1; x++) {
-        let sum = 0, idx = 0;
-        for (let ky = -1; ky <= 1; ky++) {
-          for (let kx = -1; kx <= 1; kx++) {
-            const p = ((y + ky) * w + (x + kx)) * 4;
-            sum += img.data[p]; // grayscale in R
-            idx++;
-          }
-        }
-        const p0 = (y * w + x) * 4;
-        const v = sum / 9;
-        out[p0] = out[p0+1] = out[p0+2] = v;
-      }
-    }
-    img.data.set(out);
-  };
-  blur(src);
-
-  // 3) Sobel edge magnitude
-  const sobel = new Uint8ClampedArray(w * h);
-  const get = (x, y) => {
-    const i = (y * w + x) * 4;
-    return d[i]; // grayscale
-  };
-  for (let y = 1; y < h - 1; y++) {
-    for (let x = 1; x < w - 1; x++) {
-      const gx =
-        -1*get(x-1,y-1) + 1*get(x+1,y-1) +
-        -2*get(x-1,y  ) + 2*get(x+1,y  ) +
-        -1*get(x-1,y+1) + 1*get(x+1,y+1);
-      const gy =
-         1*get(x-1,y-1) + 2*get(x,y-1) + 1*get(x+1,y-1) +
-        -1*get(x-1,y+1) - 2*get(x,y+1) - 1*get(x+1,y+1);
-      let mag = Math.sqrt(gx*gx + gy*gy);
-      if (mag > 255) mag = 255;
-      sobel[y * w + x] = mag;
-    }
-  }
-
-  // 4) Threshold edges to black lines on white
-  const EDGE_THRESHOLD = 60;  // lower => more lines; higher => cleaner
-  for (let y = 0; y < h; y++) {
-    for (let x = 0; x < w; x++) {
-      const p = (y * w + x) * 4;
-      const edge = sobel[y * w + x];
-      const isLine = edge > EDGE_THRESHOLD;
-      const v = isLine ? 0 : 255; // black line, white background
-      d[p] = d[p+1] = d[p+2] = v;
-      d[p+3] = 255;
-    }
-  }
-
-  // 5) Optional thicken lines (one cheap “dilate” pass)
-  const thicken = true;
-  if (thicken) {
-    const copy = new Uint8ClampedArray(d);
-    const idx = (x,y) => (y*w + x)*4;
-    for (let y = 1; y < h - 1; y++) {
-      for (let x = 1; x < w - 1; x++) {
-        const p = idx(x,y);
-        // if center is white, but any neighbour is black, make it dark gray
-        if (copy[p] === 255) {
-          if (
-            copy[idx(x-1,y  )] === 0 || copy[idx(x+1,y  )] === 0 ||
-            copy[idx(x  ,y-1)] === 0 || copy[idx(x  ,y+1)] === 0
-          ) {
-            d[p] = d[p+1] = d[p+2] = 0; // make it black (or try 64 for softer)
-          }
-        }
-      }
-    }
-  }
-
-  ctx.putImageData(src, 0, 0);
-  return canvas;
+/* =========================
+   TRAIT SELECTOR + RANDOMIZER
+   ========================= */
+function selectTrait(category, filename) {
+  const el = document.getElementById(category);
+  if (!el) return;
+  el.src = filename || '';
 }
 
+function showCategory(categoryId) {
+  document.querySelectorAll('.trait-category').forEach(c => c.classList.remove('active'));
+  const el = document.getElementById(categoryId);
+  if (el) el.classList.add('active');
+  document.getElementById('traitPictures').style.display = 'flex';
+}
+
+function getRandomIndex(max) {
+  return Math.floor(Math.random() * max) + 1;
+}
+function getImagePath(folder, index) {
+  return `${folder}/${index}.PNG`;
+}
+
+function randomizeCharacter() {
+  // ---- BASE TRAITS ---- //
+  const backgroundIndex = getRandomIndex(99);
+  selectTrait('background', getImagePath('BACKGROUNDS', backgroundIndex));
+
+  // FIXED: folder name must match your thumbnails (no space)
+  const backgroundblurIndex = getRandomIndex(2);
+  selectTrait('backgroundblur', getImagePath('BACKGROUNDBLUR', backgroundblurIndex));
+
+  const skinIndex = getRandomIndex(39);
+  selectTrait('skin', getImagePath('SKIN', skinIndex));
+
+  const eyesIndex = getRandomIndex(32);
+  selectTrait('eyes', getImagePath('EYES', eyesIndex));
+
+  const mouthIndex = getRandomIndex(91);
+  selectTrait('mouth', getImagePath('MOUTH', mouthIndex));
+
+  const clothingIndex = getRandomIndex(139);
+  selectTrait('clothing', getImagePath('CLOTHING', clothingIndex));
+
+  // ---- HAIR / HAT ---- //
+  if (Math.random() < 0.5) {
+    selectTrait('hair', getImagePath('HAIR', getRandomIndex(66)));
+    selectTrait('hat', '');
+  } else {
+    // You list up to 122 hats in the picker; safe upper bound:
+    selectTrait('hat', getImagePath('HATS', getRandomIndex(122)));
+    selectTrait('hair', '');
   }
 
-  function downloadCanvas(canvas, filename = 'LittleOllie.png') {
+  // ---- OPTIONAL TRAITS ---- //
+  selectTrait('accessories', Math.random() < 0.5 ? getImagePath('GLASSES', getRandomIndex(24)) : '');
+  selectTrait('behindback', Math.random() < 0.5 ? getImagePath('BEHINDBACK', getRandomIndex(4)) : '');
+  selectTrait('goo', Math.random() < 0.5 ? getImagePath('GOO', getRandomIndex(6)) : '');
+
+  // ---- CLEAR HANDS ---- //
+  selectTrait('hand', '');
+  selectTrait('hand2', '');
+  selectTrait('ball', '');
+  selectTrait('ball2', '');
+
+  // ---- DECIDE HAND COMBO ---- //
+  const handCombo = Math.floor(Math.random() * 3); // 0 = hand1, 1 = hand2, 2 = neither
+  if (handCombo === 0) {
+    selectTrait('hand', getImagePath('HANDS', skinIndex));
+    selectTrait('ball', getImagePath('HANDITEM', getRandomIndex(15)));
+  } else if (handCombo === 1) {
+    selectTrait('hand2', getImagePath('HANDS2', skinIndex));
+    selectTrait('ball2', getImagePath('HANDITEM2', getRandomIndex(18)));
+  }
+}
+
+/* =========================
+   DOWNLOAD (COLOR + B&W LINE ART)
+   ========================= */
+(function initDownloads(){
+  const stage = document.getElementById('characterDisplay');
+  const btnColor = document.getElementById('downloadColor');
+  const btnBW    = document.getElementById('downloadBW');
+
+  if (!stage || !btnColor || !btnBW) return; // in case HTML not present yet
+
+  function getLayers() {
+    // Use DOM order = stacking order
+    return Array.from(stage.querySelectorAll('img')).filter(img => img.src && img.complete);
+  }
+
+  function renderComposite(toBW = false) {
+    const OUTPUT_SIZE = 2048; // 3072/4096 for print quality
+    const canvas = document.createElement('canvas');
+    canvas.width = OUTPUT_SIZE;
+    canvas.height = OUTPUT_SIZE;
+    const ctx = canvas.getContext('2d');
+
+    // Always start with white page for print
+    ctx.fillStyle = '#fff';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // In B&W we skip heavy backgrounds so page stays white
+    const skipInBW = new Set(['background', 'backgroundblur']);
+
+    // Draw visible layers
+    getLayers().forEach(img => {
+      if (toBW && skipInBW.has(img.id)) return;
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+    });
+
+    if (!toBW) return canvas;
+
+    // ==== Convert to clean line-art via Sobel edges ====
+    const src = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    const d = src.data, w = src.width, h = src.height;
+
+    // 1) Grayscale
+    for (let i = 0; i < d.length; i += 4) {
+      const r = d[i], g = d[i+1], b = d[i+2];
+      const gray = 0.2126*r + 0.7152*g + 0.0722*b;
+      d[i] = d[i+1] = d[i+2] = gray;
+    }
+
+    // 2) Small 3x3 blur to reduce speckle
+    (function blur3x3(img){
+      const out = new Uint8ClampedArray(img.data);
+      for (let y = 1; y < h - 1; y++) {
+        for (let x = 1; x < w - 1; x++) {
+          let sum = 0;
+          for (let ky = -1; ky <= 1; ky++) {
+            for (let kx = -1; kx <= 1; kx++) {
+              const p = ((y+ky)*w + (x+kx)) * 4;
+              sum += img.data[p];
+            }
+          }
+          const p0 = (y*w + x) * 4;
+          const v = sum / 9;
+          out[p0] = out[p0+1] = out[p0+2] = v;
+        }
+      }
+      img.data.set(out);
+    })(src);
+
+    // 3) Sobel edge magnitude
+    const sobel = new Uint8ClampedArray(w*h);
+    const get = (x,y) => d[(y*w + x)*4];
+    for (let y = 1; y < h - 1; y++) {
+      for (let x = 1; x < w - 1; x++) {
+        const gx =
+          -get(x-1,y-1) + get(x+1,y-1)
+        + -2*get(x-1,y  ) + 2*get(x+1,y  )
+        + -get(x-1,y+1) + get(x+1,y+1);
+        const gy =
+           get(x-1,y-1) + 2*get(x,y-1) + get(x+1,y-1)
+        - get(x-1,y+1) - 2*get(x,y+1) - get(x+1,y+1);
+        let mag = Math.sqrt(gx*gx + gy*gy);
+        if (mag > 255) mag = 255;
+        sobel[y*w + x] = mag;
+      }
+    }
+
+    // 4) Threshold to black lines on white
+    const EDGE_THRESHOLD = 60; // lower = more lines; higher = cleaner
+    for (let y = 0; y < h; y++) {
+      for (let x = 0; x < w; x++) {
+        const p = (y*w + x) * 4;
+        const isLine = sobel[y*w + x] > EDGE_THRESHOLD;
+        const v = isLine ? 0 : 255;
+        d[p] = d[p+1] = d[p+2] = v;
+        d[p+3] = 255;
+      }
+    }
+
+    // 5) Optional one-pass thicken (cheap dilate)
+    const thicken = true;
+    if (thicken) {
+      const copy = new Uint8ClampedArray(d);
+      const idx = (x,y) => (y*w + x) * 4;
+      for (let y = 1; y < h - 1; y++) {
+        for (let x = 1; x < w - 1; x++) {
+          const p = idx(x,y);
+          if (copy[p] === 255) {
+            if (copy[idx(x-1,y)]===0 || copy[idx(x+1,y)]===0 || copy[idx(x,y-1)]===0 || copy[idx(x,y+1)]===0) {
+              d[p] = d[p+1] = d[p+2] = 0;
+            }
+          }
+        }
+      }
+    }
+
+    ctx.putImageData(src, 0, 0);
+    return canvas;
+  }
+
+  function downloadCanvas(canvas, filename) {
     const a = document.createElement('a');
     a.download = filename;
     a.href = canvas.toDataURL('image/png');
@@ -1281,92 +1331,16 @@ function renderComposite({ toBW = false } = {}) {
   }
 
   btnColor.addEventListener('click', () => {
-    const c = renderComposite({ toBW: false });
+    const c = renderComposite(false);
     downloadCanvas(c, 'LittleOllie_Colour.png');
   });
-
   btnBW.addEventListener('click', () => {
-    const c = renderComposite({ toBW: true });
+    const c = renderComposite(true);
     downloadCanvas(c, 'LittleOllie_ColouringPage.png');
   });
 })();
-
-function selectTrait(category, filename) {
-    if (filename) {
-        document.getElementById(category).src = filename;
-    } else {
-        document.getElementById(category).src = '';
-    }
-}
-
-function showCategory(categoryId) {
-    document.querySelectorAll('.trait-category').forEach(category => {
-        category.classList.remove('active');
-    });
-    document.getElementById(categoryId).classList.add('active');
-    document.getElementById('traitPictures').style.display = 'flex';
-}
-
-function getRandomIndex(max) {
-    return Math.floor(Math.random() * max) + 1;
-}
-
-function getImagePath(folder, index) {
-    return `${folder}/${index}.PNG`;
-}
-
-function randomizeCharacter() {
-    // ---- BASE TRAITS ---- //
-    const backgroundIndex = getRandomIndex(99);
-    selectTrait('background', getImagePath('BACKGROUNDS', backgroundIndex));
-
-    const backgroundblurIndex = getRandomIndex(2);
-    selectTrait('backgroundblur', getImagePath('BACKGROUNDBLUR', backgroundblurIndex));
-
-    const skinIndex = getRandomIndex(39);
-    selectTrait('skin', getImagePath('SKIN', skinIndex));
-
-    const eyesIndex = getRandomIndex(32);
-    selectTrait('eyes', getImagePath('EYES', eyesIndex));
-
-    const mouthIndex = getRandomIndex(91);
-    selectTrait('mouth', getImagePath('MOUTH', mouthIndex));
-
-    const clothingIndex = getRandomIndex(139);
-    selectTrait('clothing', getImagePath('CLOTHING', clothingIndex));
-
-    // ---- HAIR / HAT ---- //
-    if (Math.random() < 0.5) {
-        selectTrait('hair', getImagePath('HAIR', getRandomIndex(66)));
-        selectTrait('hat', '');
-    } else {
-        selectTrait('hat', getImagePath('HATS', getRandomIndex(122)));
-        selectTrait('hair', '');
-    }
-
-    // ---- OPTIONAL TRAITS ---- //
-    selectTrait('accessories', Math.random() < 0.5 ? getImagePath('GLASSES', getRandomIndex(24)) : '');
-    selectTrait('behindback', Math.random() < 0.5 ? getImagePath('BEHINDBACK', getRandomIndex(4)) : '');
-    selectTrait('goo', Math.random() < 0.5 ? getImagePath('GOO', getRandomIndex(6)) : '');
-
-    // ---- CLEAR HANDS ---- //
-    selectTrait('hand', '');
-    selectTrait('hand2', '');
-    selectTrait('ball', '');
-    selectTrait('ball2', '');
-
-    // ---- DECIDE HAND COMBO ---- //
-    const handCombo = Math.floor(Math.random() * 3); // 0 = hand1, 1 = hand2, 2 = neither
-
-    if (handCombo === 0) {
-        selectTrait('hand', getImagePath('HANDS', skinIndex));
-        selectTrait('ball', getImagePath('HANDITEM', getRandomIndex(14)));
-    } else if (handCombo === 1) {
-        selectTrait('hand2', getImagePath('HANDS2', skinIndex));
-        selectTrait('ball2', getImagePath('HANDITEM2', getRandomIndex(18)));
-    }
-}
 </script>
+
 
 
 </body>
