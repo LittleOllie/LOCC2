@@ -1239,86 +1239,64 @@ function randomizeCharacter() {
 
     if (!toBW) return canvas;
 
-    // ==== Convert to clean line-art via Sobel edges ====
-    const src = ctx.getImageData(0, 0, canvas.width, canvas.height);
-    const d = src.data, w = src.width, h = src.height;
+// ==== Preserve original black pixels; make everything else white ====
+const src = ctx.getImageData(0, 0, canvas.width, canvas.height);
+const d = src.data;
+const w = src.width, h = src.height;
 
-    // 1) Grayscale
-    for (let i = 0; i < d.length; i += 4) {
-      const r = d[i], g = d[i+1], b = d[i+2];
-      const gray = 0.2126*r + 0.7152*g + 0.0722*b;
-      d[i] = d[i+1] = d[i+2] = gray;
-    }
+// Tweakable knobs:
+// - BLACK_MAX: how dark a pixel must be to be considered black (higher catches dark greys)
+// - CHROMA_MAX: how “neutral” (low chroma) it must be (prevents dark colored fills becoming black)
+const BLACK_MAX  = 70;  // try 60–100 depending on how dark your ink is
+const CHROMA_MAX = 18;  // lower = stricter; try 10–25
 
-    // 2) Small 3x3 blur to reduce speckle
-    (function blur3x3(img){
-      const out = new Uint8ClampedArray(img.data);
-      for (let y = 1; y < h - 1; y++) {
-        for (let x = 1; x < w - 1; x++) {
-          let sum = 0;
-          for (let ky = -1; ky <= 1; ky++) {
-            for (let kx = -1; kx <= 1; kx++) {
-              const p = ((y+ky)*w + (x+kx)) * 4;
-              sum += img.data[p];
-            }
-          }
-          const p0 = (y*w + x) * 4;
-          const v = sum / 9;
-          out[p0] = out[p0+1] = out[p0+2] = v;
-        }
-      }
-      img.data.set(out);
-    })(src);
+for (let i = 0; i < d.length; i += 4) {
+  const r = d[i], g = d[i+1], b = d[i+2], a = d[i+3];
 
-    // 3) Sobel edge magnitude
-    const sobel = new Uint8ClampedArray(w*h);
-    const get = (x,y) => d[(y*w + x)*4];
-    for (let y = 1; y < h - 1; y++) {
-      for (let x = 1; x < w - 1; x++) {
-        const gx =
-          -get(x-1,y-1) + get(x+1,y-1)
-        + -2*get(x-1,y  ) + 2*get(x+1,y  )
-        + -get(x-1,y+1) + get(x+1,y+1);
-        const gy =
-           get(x-1,y-1) + 2*get(x,y-1) + get(x+1,y-1)
-        - get(x-1,y+1) - 2*get(x,y+1) - get(x+1,y+1);
-        let mag = Math.sqrt(gx*gx + gy*gy);
-        if (mag > 255) mag = 255;
-        sobel[y*w + x] = mag;
-      }
-    }
+  // Transparent -> white paper
+  if (a < 10) {
+    d[i] = d[i+1] = d[i+2] = 255; d[i+3] = 255;
+    continue;
+  }
 
-    // 4) Threshold to black lines on white
-    const EDGE_THRESHOLD = 60; // lower = more lines; higher = cleaner
-    for (let y = 0; y < h; y++) {
-      for (let x = 0; x < w; x++) {
-        const p = (y*w + x) * 4;
-        const isLine = sobel[y*w + x] > EDGE_THRESHOLD;
-        const v = isLine ? 0 : 255;
-        d[p] = d[p+1] = d[p+2] = v;
-        d[p+3] = 255;
-      }
-    }
+  // “Near-black & neutral” test
+  const maxRGB = Math.max(r,g,b);
+  const minRGB = Math.min(r,g,b);
+  const chroma = maxRGB - minRGB;   // how colored it is
+  const isNearBlack = (maxRGB <= BLACK_MAX) && (chroma <= CHROMA_MAX);
 
-    // 5) Optional one-pass thicken (cheap dilate)
-    const thicken = true;
-    if (thicken) {
-      const copy = new Uint8ClampedArray(d);
-      const idx = (x,y) => (y*w + x) * 4;
-      for (let y = 1; y < h - 1; y++) {
-        for (let x = 1; x < w - 1; x++) {
-          const p = idx(x,y);
-          if (copy[p] === 255) {
-            if (copy[idx(x-1,y)]===0 || copy[idx(x+1,y)]===0 || copy[idx(x,y-1)]===0 || copy[idx(x,y+1)]===0) {
-              d[p] = d[p+1] = d[p+2] = 0;
-            }
-          }
+  if (isNearBlack) {
+    // keep outlines as solid black
+    d[i] = d[i+1] = d[i+2] = 0; d[i+3] = 255;
+  } else {
+    // everything else becomes white paper
+    d[i] = d[i+1] = d[i+2] = 255; d[i+3] = 255;
+  }
+}
+
+// Optional: thicken lines slightly (cheap dilation)
+const thicken = true;
+if (thicken) {
+  const copy = new Uint8ClampedArray(d);
+  const idx = (x,y) => (y*w + x)*4;
+  for (let y = 1; y < h - 1; y++) {
+    for (let x = 1; x < w - 1; x++) {
+      const p = idx(x,y);
+      if (copy[p] === 255) { // white
+        if (
+          copy[idx(x-1,y)]===0 || copy[idx(x+1,y)]===0 ||
+          copy[idx(x,y-1)]===0 || copy[idx(x,y+1)]===0
+        ) {
+          d[p] = d[p+1] = d[p+2] = 0; // make adjacent to black => black
         }
       }
     }
+  }
+}
 
-    ctx.putImageData(src, 0, 0);
-    return canvas;
+ctx.putImageData(src, 0, 0);
+return canvas;
+
   }
 
   function downloadCanvas(canvas, filename) {
