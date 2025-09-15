@@ -361,6 +361,8 @@ button:hover {
 <img src="BACKGROUNDBLUR/AAA.PNG" alt="BEHINDBACK" onclick="selectTrait('backgroundblur', 'BACKGROUNDBLUR/AA.PNG')">
 <img src="BACKGROUNDBLUR/1.PNG" alt="BEHINDBACK" onclick="selectTrait('backgroundblur', 'BACKGROUNDBLUR/1.PNG')">
 <img src="BACKGROUNDBLUR/2.PNG" alt="BEHINDBACK" onclick="selectTrait('backgroundblur', 'BACKGROUNDBLUR/2.PNG')">
+<img src="BACKGROUNDBLUR/3.PNG" alt="BEHINDBACK" onclick="selectTrait('backgroundblur', 'BACKGROUNDBLUR/3.PNG')">
+<img src="BACKGROUNDBLUR/4.PNG" alt="BEHINDBACK" onclick="selectTrait('backgroundblur', 'BACKGROUNDBLUR/4.PNG')">
 
             </div>
         </div>
@@ -947,6 +949,8 @@ button:hover {
 <img src="HATS/120.PNG" alt="HATS" onclick="selectTrait('hat', 'HATS/120.PNG')">
 <img src="HATS/121.PNG" alt="HATS" onclick="selectTrait('hat', 'HATS/121.PNG')">
 <img src="HATS/122.PNG" alt="HATS" onclick="selectTrait('hat', 'HATS/122.PNG')">
+<img src="HATS/123.PNG" alt="HATS" onclick="selectTrait('hat', 'HATS/123.PNG')">
+
 
 
 
@@ -1155,7 +1159,7 @@ function randomizeCharacter() {
   selectTrait('background', getImagePath('BACKGROUNDS', backgroundIndex));
 
   // FIXED: folder name must match your thumbnails (no space)
-  const backgroundblurIndex = getRandomIndex(2);
+  const backgroundblurIndex = getRandomIndex(4);
   selectTrait('backgroundblur', getImagePath('BACKGROUNDBLUR', backgroundblurIndex));
 
   const skinIndex = getRandomIndex(39);
@@ -1176,7 +1180,7 @@ function randomizeCharacter() {
     selectTrait('hat', '');
   } else {
     // You list up to 122 hats in the picker; safe upper bound:
-    selectTrait('hat', getImagePath('HATS', getRandomIndex(122)));
+    selectTrait('hat', getImagePath('HATS', getRandomIndex(123)));
     selectTrait('hair', '');
   }
 
